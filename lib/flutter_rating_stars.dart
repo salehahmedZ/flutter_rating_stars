@@ -3,7 +3,6 @@ library flutter_rating_stars;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/generated/assets.dart';
 
 /// This is a RatingStars widget. it shows a row of stars that describes how many scores a field gets.
 /// Star items have an action also that allows use in more cases.
@@ -104,19 +103,14 @@ class RatingStars extends StatefulWidget {
     this.starCount = 5,
     this.starSize = 20,
     this.valueLabelColor = const Color(0xff9b9b9b),
-    this.valueLabelTextStyle = const TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w400,
-        fontStyle: FontStyle.normal,
-        fontSize: 12.0),
+    this.valueLabelTextStyle = const TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontStyle: FontStyle.normal, fontSize: 12.0),
     this.valueLabelRadius = 10,
     this.maxValue = 5,
     this.starSpacing = 2,
     this.maxValueVisibility = true,
     this.valueLabelVisibility = true,
-    this.animationDuration = Duration.zero,
-    this.valueLabelPadding =
-        const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.valueLabelPadding = const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
     this.valueLabelMargin = const EdgeInsets.only(right: 8),
     this.starOffColor = const Color(0xffe7e8ea),
     this.starColor = Colors.yellow,
@@ -128,23 +122,18 @@ class RatingStars extends StatefulWidget {
   _RatingStarsState createState() => _RatingStarsState();
 }
 
-class _RatingStarsState extends State<RatingStars>
-    with TickerProviderStateMixin {
+class _RatingStarsState extends State<RatingStars> with TickerProviderStateMixin {
   AnimationController? _animationController;
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: _calculateDuration());
+    _animationController = AnimationController(vsync: this, duration: _calculateDuration());
     _animationController!.forward(from: 0);
     super.initState();
   }
 
   Duration _calculateDuration() {
-    var millis = (widget.animationDuration.inMilliseconds *
-            widget.value /
-            widget.maxValue)
-        .round();
+    var millis = (widget.animationDuration.inMilliseconds * widget.value / widget.maxValue).round();
     return Duration(milliseconds: millis);
   }
 
@@ -173,13 +162,8 @@ class _RatingStarsState extends State<RatingStars>
           Container(
             padding: widget.valueLabelPadding,
             margin: widget.valueLabelMargin,
-            child: Text(
-                "${widget.value.toStringAsPrecision(2)}${widget.maxValueVisibility ? '/${widget.maxValue.toStringAsPrecision(2)}' : ''}",
-                style: widget.valueLabelTextStyle),
-            decoration: BoxDecoration(
-                color: widget.valueLabelColor,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(widget.valueLabelRadius)),
+            child: Text("${widget.value.toStringAsPrecision(2)}${widget.maxValueVisibility ? '/${widget.maxValue.toStringAsPrecision(2)}' : ''}", style: widget.valueLabelTextStyle),
+            decoration: BoxDecoration(color: widget.valueLabelColor, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(widget.valueLabelRadius)),
           ),
         Stack(
           children: [
@@ -189,10 +173,7 @@ class _RatingStarsState extends State<RatingStars>
                 widget.starCount,
                 (index) {
                   return Container(
-                    margin: index == widget.starCount - 1
-                        ? null
-                        : EdgeInsets.symmetric(
-                            horizontal: widget.starSpacing / 2),
+                    margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
                     alignment: Alignment.center,
                     child: _starWidget(index, true, widget.starOffColor),
                   );
@@ -206,10 +187,7 @@ class _RatingStarsState extends State<RatingStars>
                   return ClipRect(
                     child: Container(
                       child: Align(
-                        widthFactor: max(
-                            0,
-                            min(widget.maxValue.toDouble(),
-                                widget.value / widget.maxValue)),
+                        widthFactor: max(0, min(widget.maxValue.toDouble(), widget.value / widget.maxValue)),
                         alignment: Alignment.centerLeft,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -217,19 +195,11 @@ class _RatingStarsState extends State<RatingStars>
                             widget.starCount,
                             (index) {
                               return Container(
-                                margin: index == widget.starCount - 1
-                                    ? null
-                                    : EdgeInsets.symmetric(
-                                        horizontal: widget.starSpacing / 2),
+                                margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
                                 alignment: Alignment.center,
                                 child: Transform.scale(
-                                  scale: Tween<double>(begin: 0.0, end: 1.0)
-                                      .chain(CurveTween(
-                                          curve: Interval(0.15 * index, 1.0,
-                                              curve: Curves.elasticOut)))
-                                      .evaluate(_animationController!),
-                                  child: _starWidget(
-                                      index, false, widget.starColor),
+                                  scale: Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Interval(0.15 * index, 1.0, curve: Curves.elasticOut))).evaluate(_animationController!),
+                                  child: _starWidget(index, false, widget.starColor),
                                 ),
                               );
                             },
@@ -254,26 +224,22 @@ class _RatingStarsState extends State<RatingStars>
             width: widget.starSize,
             height: widget.starSize,
           )
-        : Image.asset(
-            Assets.assetsStarOff,
-            width: widget.starSize,
-            height: widget.starSize,
-            package: 'flutter_rating_stars',
+        : Icon(
+            Icons.star,
+            size: widget.starSize,
             color: color,
           );
+
     if (!action) return _star;
     return ElevatedButton(
       style: ButtonStyle(
-        shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(widget.starSize / 2))),
-        minimumSize: MaterialStateProperty.all<Size>(
-            Size(widget.starSize, widget.starSize)),
+        shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.starSize / 2))),
+        minimumSize: MaterialStateProperty.all<Size>(Size(widget.starSize, widget.starSize)),
         padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
         elevation: MaterialStateProperty.all<double>(0.0),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-        overlayColor:
-            MaterialStateProperty.all<Color>(widget.starColor.withOpacity(0.2)),
+        overlayColor: MaterialStateProperty.all<Color>(widget.starColor.withOpacity(0.2)),
         animationDuration: Duration(milliseconds: 100),
       ),
       onPressed: widget.onValueChanged == null

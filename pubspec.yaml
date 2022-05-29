@@ -5,17 +5,9 @@ homepage: https://romanticdeveloper.com
 repository: https://github.com/minhhung2556/romantic_project_flutter_rating_stars
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=2.17.0 <3.0.0'
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  assets:
-    - assets/star_off.png
