@@ -154,66 +154,78 @@ class _RatingStarsState extends State<RatingStars> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        if (widget.valueLabelVisibility)
-          Container(
-            padding: widget.valueLabelPadding,
-            margin: widget.valueLabelMargin,
-            child: Text("${widget.value.toStringAsPrecision(2)}${widget.maxValueVisibility ? '/${widget.maxValue.toStringAsPrecision(2)}' : ''}", style: widget.valueLabelTextStyle),
-            decoration: BoxDecoration(color: widget.valueLabelColor, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(widget.valueLabelRadius)),
+    
+    if (widget.valueLabelVisibility) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          buildValueLabel(),
+          buildStars(),
+        ],
+      );
+    }
+
+    return buildStars();
+  }
+
+  Stack buildStars() {
+    return Stack(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
+            widget.starCount,
+            (index) {
+              return Container(
+                margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
+                alignment: Alignment.center,
+                child: _starWidget(index, true, widget.starOffColor),
+              );
+            },
           ),
-        Stack(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: List.generate(
-                widget.starCount,
-                (index) {
-                  return Container(
-                    margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
-                    alignment: Alignment.center,
-                    child: _starWidget(index, true, widget.starOffColor),
-                  );
-                },
-              ),
-            ),
-            IgnorePointer(
-              child: AnimatedBuilder(
-                animation: _animationController!,
-                builder: (context, child) {
-                  return ClipRect(
-                    child: Container(
-                      child: Align(
-                        widthFactor: max(0, min(widget.maxValue.toDouble(), widget.value / widget.maxValue)),
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(
-                            widget.starCount,
-                            (index) {
-                              return Container(
-                                margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
-                                alignment: Alignment.center,
-                                child: Transform.scale(
-                                  scale: Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Interval(0.15 * index, 1.0, curve: Curves.elasticOut))).evaluate(_animationController!),
-                                  child: _starWidget(index, false, widget.starColor),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+        ),
+        IgnorePointer(
+          child: AnimatedBuilder(
+            animation: _animationController!,
+            builder: (context, child) {
+              return ClipRect(
+                child: Container(
+                  child: Align(
+                    widthFactor: max(0, min(widget.maxValue.toDouble(), widget.value / widget.maxValue)),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                        widget.starCount,
+                        (index) {
+                          return Container(
+                            margin: index == widget.starCount - 1 ? null : EdgeInsets.symmetric(horizontal: widget.starSpacing / 2),
+                            alignment: Alignment.center,
+                            child: Transform.scale(
+                              scale: Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Interval(0.15 * index, 1.0, curve: Curves.elasticOut))).evaluate(_animationController!),
+                              child: _starWidget(index, false, widget.starColor),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
+    );
+  }
+
+  Container buildValueLabel() {
+    return Container(
+      padding: widget.valueLabelPadding,
+      margin: widget.valueLabelMargin,
+      child: Text("${widget.value.toStringAsPrecision(2)}${widget.maxValueVisibility ? '/${widget.maxValue.toStringAsPrecision(2)}' : ''}", style: widget.valueLabelTextStyle),
+      decoration: BoxDecoration(color: widget.valueLabelColor, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(widget.valueLabelRadius)),
     );
   }
 
