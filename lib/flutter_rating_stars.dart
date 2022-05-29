@@ -75,6 +75,9 @@ class RatingStars extends StatefulWidget {
   /// [valueLabelVisibility] show/hide value label at the left side.
   final bool valueLabelVisibility;
 
+  /// [valueLabelVisibility] show/hide value label at the left side.
+  final bool valueLabelUnderStars;
+
   /// [valueLabelPadding] is the padding of the label widget.
   final EdgeInsets valueLabelPadding;
 
@@ -109,6 +112,7 @@ class RatingStars extends StatefulWidget {
     this.starSpacing = 2,
     this.maxValueVisibility = true,
     this.valueLabelVisibility = true,
+    this.valueLabelUnderStars = true,
     this.animationDuration = const Duration(milliseconds: 500),
     this.valueLabelPadding = const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
     this.valueLabelMargin = const EdgeInsets.only(right: 8),
@@ -154,8 +158,18 @@ class _RatingStarsState extends State<RatingStars> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    
     if (widget.valueLabelVisibility) {
+      if (widget.valueLabelUnderStars) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            buildStars(),
+            buildValueLabel(),
+          ],
+        );
+      }
+
       return Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
